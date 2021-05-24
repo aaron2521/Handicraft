@@ -3,9 +3,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:handicraft/login.dart';
-import 'package:handicraft/sellerhome.dart';
-import 'package:handicraft/pages/customerhome.dart';
+import 'package:handicraft/auth/login.dart';
+import 'package:handicraft/seller_screen/sellerhome.dart';
+import 'package:handicraft/customer_screen/customerhome.dart';
 import 'package:handicraft/sidebar/sidebar_layout.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -25,13 +25,9 @@ class _SplashScreenState extends State<SplashScreen> {
     displaySplash();
   }
   void displaySplash()async{
-    // print(sharedPreferences.getString("type"));
-    // print(sharedPreferences.getString("email"));
     Timer(Duration(seconds: 5),()async{
       if(await _googleSignIn.isSignedIn()){
-        // print(_googleSignIn.currentUser.displayName);
-        // sharedPreferences ??= await SharedPreferences.getInstance();
-        String type=await App.sharedPreferences.getString("type");
+        String type=App.sharedPreferences.getString("type");
         if(type=='seller'){
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>(SellerHome())));
         }
