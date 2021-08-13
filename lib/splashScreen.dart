@@ -15,7 +15,7 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  GoogleSignIn _googleSignIn=GoogleSignIn(scopes: ['email']);
+  GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
   String type;
   // SharedPreferences sharedPreferences;
 
@@ -24,25 +24,26 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     displaySplash();
   }
-  void displaySplash()async{
-    Timer(Duration(seconds: 5),()async{
-      if(await _googleSignIn.isSignedIn()){
-        String type=App.sharedPreferences.getString("type");
-        if(type=='seller'){
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>(SellerHome())));
-        }
-        else if(type=='customer'){
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>(SidebarLayout())));
-        }
-        else{
+
+  void displaySplash() async {
+    Timer(Duration(seconds: 5), () async {
+      if (await _googleSignIn.isSignedIn()) {
+        String type = App.sharedPreferences.getString("type");
+        if (type == 'seller') {
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => (SellerHome())));
+        } else if (type == 'customer') {
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) => (SidebarLayout())));
+        } else {
           await _googleSignIn.signOut();
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>(Login())));
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => (Login())));
           print("something wrong");
         }
-      }
-      else{
-
-        await Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>(Login())));
+      } else {
+        await Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => (Login())));
         print("user null");
         print(type);
       }
@@ -51,37 +52,37 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double width=MediaQuery.of(context).size.width;
-    double height=MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Scaffold(
-      body:Stack(
+      body: Stack(
         alignment: Alignment.topCenter,
         children: [
           Container(
             decoration: BoxDecoration(
-                image:DecorationImage(
+                image: DecorationImage(
                     image: AssetImage("images/splash.jpg"),
-                    fit: BoxFit.cover
-                )
-            ),
+                    fit: BoxFit.cover,
+                    colorFilter: ColorFilter.mode(
+                        Colors.black.withOpacity(0.55), BlendMode.softLight))),
           ),
           Container(
-            child: Center(child: Text("Handicraft",style: TextStyle(fontSize: height*0.08,fontFamily: "Pacifico"),)),
+            padding: EdgeInsets.all(10),
             decoration: BoxDecoration(
-                   color: Colors.white54,
-              borderRadius: BorderRadius.circular(10)
+                color: Colors.white.withOpacity(.8),
+                borderRadius: BorderRadius.circular(10)),
+            margin: EdgeInsets.only(top: height * 0.15),
+            child: Text(
+              "Market Place",
+              style: TextStyle(fontSize: height * 0.08, fontFamily: "Pacifico"),
             ),
-            margin: EdgeInsets.only(top:height*0.15 ),
-            height: 100,
-            width: width*0.8,
-
-          )
+          ),
         ],
       ),
     );
   }
 }
 
-class App{
+class App {
   static SharedPreferences sharedPreferences;
 }
