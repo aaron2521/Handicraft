@@ -25,7 +25,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
-        backgroundColor: Colors.black12,
+        backgroundColor: Colors.white,
         body: AnimatedBackground(
           vsync: this,
           behaviour: BubblesBehaviour(),
@@ -33,6 +33,20 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              Container(
+                padding: EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                    color: Colors.red.withOpacity(.5),
+                    borderRadius: BorderRadius.circular(10)),
+                // margin: EdgeInsets.only(top: height * 0.15),
+                child: Text(
+                  "Market Place",
+                  style: TextStyle(
+                      fontSize: height * 0.08,
+                      fontFamily: "Pacifico",
+                      color: Colors.black),
+                ),
+              ),
               Container(
                 decoration: BoxDecoration(
                     image: DecorationImage(
@@ -46,6 +60,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
               ),
               Center(
                 child: Container(
+                  color: Colors.green,
                   height: height * 0.09,
                   width: width * 0.6,
                   child: ElevatedButton(
