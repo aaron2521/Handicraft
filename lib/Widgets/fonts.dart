@@ -16,3 +16,19 @@ TextStyle b_16cream() {
     fontWeight: FontWeight.bold,
   );
 }
+
+TextStyle b_14pink() {
+  return TextStyle(
+    color: pink,
+    fontSize: 14,
+    fontWeight: FontWeight.bold,
+  );
+}
+
+TextStyle b_14red() {
+  return TextStyle(
+    color: Colors.red,
+    fontSize: 14,
+    fontWeight: FontWeight.bold,
+  );
+}

@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:handicraft/Widgets/color.dart';
+import 'package:handicraft/Widgets/fonts.dart';
 import 'package:handicraft/customer_screen/confirmOrderViaCart.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +28,8 @@ class _CustomerCartState extends State<CustomerCart> {
           title: data.data()['title'],
           price: data.data()['price'],
           itemID: data.id,
-          available: data.data()['available']);
+          available: data.data()['available'],
+          imageURL: data.data()['imageURL']);
       cartItems.add(cart);
       totalPrice = totalPrice + double.parse(data.data()['price']);
     }
@@ -43,20 +46,34 @@ class _CustomerCartState extends State<CustomerCart> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: bgcolor,
+      appBar: AppBar(
+        title: Text("My Cart"),
+        centerTitle: true,
+      ),
       body: SafeArea(
         child: RefreshIndicator(
+          color: mehron,
           onRefresh: getCartItems,
           child: Center(
             child: Column(
               children: [
-                Text("Total Cart Value: " + totalPrice.toString()),
-                SizedBox(
-                  height: 10,
-                ),
+                Container(
+                    padding: EdgeInsets.symmetric(vertical: 10),
+                    child: cartItems.length == 0
+                        ? Container()
+                        : Text(
+                            "Total Cart Value: ₹" + totalPrice.toString(),
+                            style: b_14pink(),
+                          )),
                 Expanded(
                   child: Container(
                     child: cartItems.length == 0
-                        ? Text("Cart Empty")
+                        ? Center(
+                            child: Text(
+                            "Cart Empty",
+                            style: b_14pink(),
+                          ))
                         : ListView.builder(
                             itemCount: cartItems.length,
                             itemBuilder: (_, index) {
@@ -65,7 +82,8 @@ class _CustomerCartState extends State<CustomerCart> {
                                   cartItems[index].title,
                                   cartItems[index].price,
                                   cartItems[index].itemID,
-                                  cartItems[index].available);
+                                  cartItems[index].available,
+                                  cartItems[index].imageURL);
                             }),
                   ),
                 ),
@@ -101,7 +119,12 @@ class _CustomerCartState extends State<CustomerCart> {
 
                       checkOut();
                     },
-                    child: Text("Proceed to Buy"))
+                    style: ElevatedButton.styleFrom(
+                        primary: pink,
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 50, vertical: 20)),
+                    child: Text("Proceed to Buy")),
+                SizedBox(height: 10),
               ],
             ),
           ),
@@ -111,52 +134,103 @@ class _CustomerCartState extends State<CustomerCart> {
   }
 
   Widget CartItems(BuildContext context, String title, String price,
-      String itemID, String available) {
+      String itemID, String available, String imageURL) {
     String avaiblity = available;
-    return Card(
-      child: Container(
-        color: Colors.lightBlueAccent,
-        child: Column(
-          children: [
-            Text(title),
-            Text(price.toString()),
-            avaiblity == "instock"
-                ? SizedBox(
-                    height: 0,
-                  )
-                : Text("Not available"),
-            ElevatedButton(
-                onPressed: () {
-                  void remove() async {
-                    widget.cartCount.remove(itemID);
-                    // setState(() {
-                    cartItems
-                        .removeWhere((element) => element.itemID == itemID);
-                    setState(() {
-                      totalPrice = double.parse(totalPrice.toString()) -
-                          double.parse(price);
-                    });
-                    // });
-                    await FirebaseFirestore.instance
-                        .collection("users")
-                        .doc(App.sharedPreferences.getString("email"))
-                        .update({"cart": widget.cartCount}).then((value) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("Removed from cart")));
-                    });
-                  }
+    return Container(
+      margin: EdgeInsets.only(bottom: 10),
+      padding: EdgeInsets.symmetric(vertical: 10),
+      color: cream,
+      child: ListTile(
+        contentPadding: EdgeInsets.zero,
+        leading: Container(
+          width: 100,
+          height: 100,
+          decoration: BoxDecoration(
+              // color: white,
+              image: DecorationImage(image: NetworkImage(imageURL))),
+        ),
+        title: Text(title),
+        subtitle: avaiblity != "instock"
+            ? Text(
+                "Not available",
+                style: b_14red(),
+              )
+            : Text(
+                "₹ " + price.toString(),
+                style: b_14pink(),
+              ),
+        trailing: IconButton(
+          onPressed: () {
+            void remove() async {
+              widget.cartCount.remove(itemID);
+              // setState(() {
+              cartItems.removeWhere((element) => element.itemID == itemID);
+              setState(() {
+                totalPrice =
+                    double.parse(totalPrice.toString()) - double.parse(price);
+              });
+              // });
+              await FirebaseFirestore.instance
+                  .collection("users")
+                  .doc(App.sharedPreferences.getString("email"))
+                  .update({"cart": widget.cartCount}).then((value) {
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(SnackBar(content: Text("Removed from cart")));
+              });
+            }
 
-                  remove();
-                },
-                child: Text("Remove"))
-          ],
+            remove();
+          },
+          icon: Icon(Icons.delete),
+          color: Colors.red,
         ),
       ),
     );
+    // return Card(
+    //   child: Container(
+    //     color: mehron,
+    //     child: Column(
+    //       children: [
+    //         Text(title),
+    //         Text(price.toString()),
+    //         avaiblity == "instock"
+    //             ? SizedBox(
+    //                 height: 0,
+    //               )
+    //             : Text("Not available"),
+    //         ElevatedButton(
+    // onPressed: () {
+    //   void remove() async {
+    //     widget.cartCount.remove(itemID);
+    //     // setState(() {
+    //     cartItems
+    //         .removeWhere((element) => element.itemID == itemID);
+    //     setState(() {
+    //       totalPrice = double.parse(totalPrice.toString()) -
+    //           double.parse(price);
+    //     });
+    //     // });
+    //     await FirebaseFirestore.instance
+    //         .collection("users")
+    //         .doc(App.sharedPreferences.getString("email"))
+    //         .update({"cart": widget.cartCount}).then((value) {
+    //       ScaffoldMessenger.of(context).showSnackBar(
+    //           SnackBar(content: Text("Removed from cart")));
+    //     });
+    //   }
+
+    //   remove();
+    // },
+    //             child: Text("Remove"))
+    //       ],
+    //     ),
+    //   ),
+    // );
   }
 }
 
 class CartCard {
-  String title, price, itemID, available;
-  CartCard({this.title, this.price, this.itemID, this.available});
+  String title, price, itemID, available, imageURL;
+  CartCard(
+      {this.title, this.price, this.itemID, this.available, this.imageURL});
 }

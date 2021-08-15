@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:handicraft/Widgets/color.dart';
 import 'package:handicraft/customer_screen/orderpages.dart';
 import 'package:handicraft/customer_screen/customerhome.dart';
 import 'package:handicraft/sidebar/sidebar_layout.dart';
@@ -50,10 +51,10 @@ class _ConfirmViaCartState extends State<ConfirmViaCart> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: Color(0xff44a7c4),
+      backgroundColor: bgcolor,
       appBar: AppBar(
-        backgroundColor: Color(0xff44a7c4),
-        // title: Text("Delivery Address"),
+        backgroundColor: bgcolor,
+        title: Text("Shipping Address"),
         elevation: 0,
         leading: CloseButton(),
       ),
@@ -63,17 +64,17 @@ class _ConfirmViaCartState extends State<ConfirmViaCart> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      "Shipping Address",
-                      style: Theme.of(context).textTheme.headline5.copyWith(
-                          color: Colors.white, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  SizedBox(
-                    height: size.height * 0.05,
-                  ),
+                  // Padding(
+                  //   padding: const EdgeInsets.all(8.0),
+                  //   child: Text(
+                  //     "Shipping Address",
+                  //     style: Theme.of(context).textTheme.headline5.copyWith(
+                  //         color: Colors.white, fontWeight: FontWeight.bold),
+                  //   ),
+                  // ),
+                  // SizedBox(
+                  //   height: size.height * 0.05,
+                  // ),
                   Form(
                       key: _formKey,
                       child: Column(
@@ -81,11 +82,15 @@ class _ConfirmViaCartState extends State<ConfirmViaCart> {
                           Container(
                             child: Column(
                               children: [
-                                TextField1(icon: Icons.person,title: "Name",titleController: titleControllerName),
+                                TextField1(
+                                    icon: Icons.person,
+                                    title: "Name",
+                                    titleController: titleControllerName),
                                 Container(
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: TextFormField(
+                                      cursorColor: pink,
                                       onChanged: (value) async {
                                         void update(String value) async {
                                           try {
@@ -126,16 +131,20 @@ class _ConfirmViaCartState extends State<ConfirmViaCart> {
                                               const Radius.circular(26.0),
                                             ),
                                           ),
-                                          filled: true,
-                                          prefixIcon: Icon(
-                                            Icons.pin_drop,
-                                            color: Color(0xff44a7c4),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                              const Radius.circular(26.0),
+                                            ),
                                           ),
+                                          filled: true,
+                                          prefixIcon: Icon(Icons.pin_drop,
+                                              color: mehron),
                                           // icon: Icon(icon,color: Colors.white,),
                                           hintStyle: TextStyle(
                                               color: Colors.grey[800]),
                                           hintText: "PinCode",
-                                          fillColor: Colors.white),
+                                          fillColor: cream),
                                       validator: (title) => title.length == 6 &&
                                               title.isNotEmpty &&
                                               isNumeric(title) &&
@@ -179,8 +188,7 @@ class _ConfirmViaCartState extends State<ConfirmViaCart> {
                       child: ElevatedButton(
                         style: ButtonStyle(
                           // padding: MaterialStateProperty.all(EdgeInsets.symmetric(horizontal: size.width * 0.36)),
-                          backgroundColor:
-                              MaterialStateProperty.all(Colors.indigo),
+                          backgroundColor: MaterialStateProperty.all(pink),
                           shape:
                               MaterialStateProperty.all<RoundedRectangleBorder>(
                             RoundedRectangleBorder(
