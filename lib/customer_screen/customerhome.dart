@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:handicraft/Widgets/color.dart';
 import 'package:handicraft/customer_screen/customerCart.dart';
 import 'package:handicraft/data/data.dart';
 import 'package:handicraft/auth/login.dart';
@@ -23,9 +24,7 @@ class _CustomerHomeState extends State<CustomerHome> {
   List<Data> dataList = [];
   GoogleSignIn _googleSignIn = GoogleSignIn();
 
-
   List<String> cartList = [];
-
 
   @override
   void initState() {
@@ -38,19 +37,20 @@ class _CustomerHomeState extends State<CustomerHome> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: Colors.black87,
+      backgroundColor: bgcolor,
       body: Column(
         children: [
           Container(
-            height: size.height * 0.2,
+            padding: EdgeInsets.symmetric(vertical: 20),
+            // height: size.height * 0.1,
             decoration: BoxDecoration(
-              color: Color(0xff282C31),
+              color: pink,
               borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(36),
                   bottomRight: Radius.circular(36)),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black,
+                  color: Colors.grey,
                   offset: Offset(0.0, 5),
                   blurRadius: 6.0,
                 ),
@@ -59,10 +59,11 @@ class _CustomerHomeState extends State<CustomerHome> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Text(
-                  "Welcome !..",
-                    style: GoogleFonts.koHo(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 40)
-                ),
+                Text("Welcome !..",
+                    style: GoogleFonts.koHo(
+                        color: mehron,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 40)),
                 SizedBox(
                   width: 30,
                 ),
@@ -90,8 +91,8 @@ class _CustomerHomeState extends State<CustomerHome> {
                             stream: FirebaseFirestore.instance
                                 .collection("users")
                                 .where("email",
-                                    isEqualTo:
-                                        App.sharedPreferences.getString("email"))
+                                    isEqualTo: App.sharedPreferences
+                                        .getString("email"))
                                 .snapshots(),
                             builder: (context,
                                 AsyncSnapshot<QuerySnapshot> streamSnapshot) {
@@ -126,58 +127,48 @@ class _CustomerHomeState extends State<CustomerHome> {
             ),
           ),
           Container(
-            margin: EdgeInsets.only(
-              top: 25,
-              bottom: 25,
-            ),
-            height: 24,
-            child: Stack(
-              children: [
-                Text(
-                  "Featured Products",
-                    style: GoogleFonts.koHo(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20)
-                ),
-                Positioned(
-                  right: 0,
-                  left: 0,
-                  bottom: 0,
-                  child: Container(
-                    height: 7,
-                    color: Color(0xff282C31).withOpacity(0.3),
-                  ),
-                )
-              ],
-            ),
+            padding: EdgeInsets.all(10),
+            // height: 24,
+            child: Text("Featured Products",
+                style: GoogleFonts.koHo(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20)),
           ),
           Expanded(
-              child: StreamBuilder(
-            stream: FirebaseFirestore.instance.collection("Items").snapshots(),
-            builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
-              return !streamSnapshot.hasData
-                  ? Center(child: CircularProgressIndicator())
-                  : ListView.builder(
-                      itemCount: streamSnapshot.data.docs.length,
-                      itemBuilder: (_, index) {
-                        return FeaturedProductss(
-                            streamSnapshot.data.docs[index]['imageURL'],
-                            streamSnapshot.data.docs[index]['title'],
-                            streamSnapshot.data.docs[index]['price'], () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => (OrdersPages(
-                                      streamSnapshot.data.docs[index]['imageURL'],
-                                      streamSnapshot.data.docs[index]['title'],
-                                      streamSnapshot.data.docs[index]['price'],
-                                      streamSnapshot.data.docs[index]['desc'],
-                                      streamSnapshot.data.docs[index].id,
-                                      streamSnapshot.data.docs[index]['seller'],
-                                      cartList))));
-                        });
-                      },
-                    );
-            },
-          ),
+            child: StreamBuilder(
+              stream:
+                  FirebaseFirestore.instance.collection("Items").snapshots(),
+              builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
+                return !streamSnapshot.hasData
+                    ? Center(child: CircularProgressIndicator())
+                    : ListView.builder(
+                        itemCount: streamSnapshot.data.docs.length,
+                        itemBuilder: (_, index) {
+                          return FeaturedProductss(
+                              streamSnapshot.data.docs[index]['imageURL'],
+                              streamSnapshot.data.docs[index]['title'],
+                              streamSnapshot.data.docs[index]['price'], () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => (OrdersPages(
+                                        streamSnapshot.data.docs[index]
+                                            ['imageURL'],
+                                        streamSnapshot.data.docs[index]
+                                            ['title'],
+                                        streamSnapshot.data.docs[index]
+                                            ['price'],
+                                        streamSnapshot.data.docs[index]['desc'],
+                                        streamSnapshot.data.docs[index].id,
+                                        streamSnapshot.data.docs[index]
+                                            ['seller'],
+                                        cartList))));
+                          });
+                        },
+                      );
+              },
+            ),
           )
         ],
       ),
@@ -190,16 +181,20 @@ class _CustomerHomeState extends State<CustomerHome> {
     return GestureDetector(
       onTap: function,
       child: Container(
-        margin: EdgeInsets.all(20),
-        width: size.width * 0.7,
+        margin: EdgeInsets.fromLTRB(20, 0, 20, 20),
+        // width: size.width * 0.7,
         // height: size.height*0.4,
         child: Column(
           children: [
-            CachedNetworkImage(
-              imageUrl: imageUrl,
-              progressIndicatorBuilder: (context, url, downloadProgress) =>
-                  CircularProgressIndicator(value: downloadProgress.progress),
-              errorWidget: (context, url, error) => Icon(Icons.error),
+            Container(
+              decoration:
+                  BoxDecoration(border: Border.all(width: 3, color: pink)),
+              child: CachedNetworkImage(
+                imageUrl: imageUrl,
+                progressIndicatorBuilder: (context, url, downloadProgress) =>
+                    CircularProgressIndicator(value: downloadProgress.progress),
+                errorWidget: (context, url, error) => Icon(Icons.error),
+              ),
             ),
             Container(
               padding: EdgeInsets.all(15),
@@ -208,10 +203,10 @@ class _CustomerHomeState extends State<CustomerHome> {
                   bottomLeft: Radius.circular(10),
                   bottomRight: Radius.circular(10),
                 ),
-                color: Color(0xff282C31),
+                color: pink,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black,
+                    color: Colors.grey,
                     offset: Offset(0.0, 5),
                     blurRadius: 6.0,
                   ),
@@ -219,15 +214,17 @@ class _CustomerHomeState extends State<CustomerHome> {
               ),
               child: Row(
                 children: [
-                  Text(
-                    title,
-                      style: GoogleFonts.koHo(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 18)
-                  ),
+                  Text(title,
+                      style: GoogleFonts.koHo(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18)),
                   Spacer(),
-                  Text(
-                    "₹ " + price,
-                      style: GoogleFonts.koHo(color: Colors.grey,fontWeight: FontWeight.bold,fontSize: 18)
-                  ),
+                  Text("₹ " + price,
+                      style: GoogleFonts.koHo(
+                          color: cream,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18)),
                 ],
               ),
             )
