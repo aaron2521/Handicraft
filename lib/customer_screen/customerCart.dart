@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:handicraft/Widgets/color.dart';
 import 'package:handicraft/Widgets/fonts.dart';
+import 'package:handicraft/Widgets/progress.dart';
 import 'package:handicraft/customer_screen/confirmOrderViaCart.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,7 @@ class CustomerCart extends StatefulWidget {
 }
 
 class _CustomerCartState extends State<CustomerCart> {
+  bool pageloadin = true;
   List<CartCard> cartItems = [];
   Future<void> getCartItems() async {
     cartItems.clear();
@@ -39,7 +41,11 @@ class _CustomerCartState extends State<CustomerCart> {
   @override
   void initState() {
     super.initState();
-    getCartItems();
+    getCartItems().whenComplete(() {
+      setState(() {
+        pageloadin = false;
+      });
+    });
   }
 
   double totalPrice = 0;
@@ -55,79 +61,87 @@ class _CustomerCartState extends State<CustomerCart> {
         child: RefreshIndicator(
           color: mehron,
           onRefresh: getCartItems,
-          child: Center(
-            child: Column(
-              children: [
-                Container(
-                    padding: EdgeInsets.symmetric(vertical: 10),
-                    child: cartItems.length == 0
-                        ? Container()
-                        : Text(
-                            "Total Cart Value: ₹" + totalPrice.toString(),
-                            style: b_14pink(),
-                          )),
-                Expanded(
-                  child: Container(
-                    child: cartItems.length == 0
-                        ? Center(
-                            child: Text(
-                            "Cart Empty",
-                            style: b_14pink(),
-                          ))
-                        : ListView.builder(
-                            itemCount: cartItems.length,
-                            itemBuilder: (_, index) {
-                              return CartItems(
-                                  context,
-                                  cartItems[index].title,
-                                  cartItems[index].price,
-                                  cartItems[index].itemID,
-                                  cartItems[index].available,
-                                  cartItems[index].imageURL);
-                            }),
+          child: pageloadin
+              ? Center(child: circularProgress())
+              : Center(
+                  child: Column(
+                    children: [
+                      Container(
+                          padding: EdgeInsets.symmetric(vertical: 10),
+                          child: cartItems.length == 0
+                              ? Container()
+                              : Text(
+                                  "Total Cart Value: ₹" + totalPrice.toString(),
+                                  style: b_14pink(),
+                                )),
+                      Expanded(
+                        child: Container(
+                          child: cartItems.length == 0
+                              ? Center(
+                                  child: Text(
+                                  "Cart Empty",
+                                  style: b_14pink(),
+                                ))
+                              : ListView.builder(
+                                  itemCount: cartItems.length,
+                                  itemBuilder: (_, index) {
+                                    return CartItems(
+                                        context,
+                                        cartItems[index].title,
+                                        cartItems[index].price,
+                                        cartItems[index].itemID,
+                                        cartItems[index].available,
+                                        cartItems[index].imageURL);
+                                  }),
+                        ),
+                      ),
+                      cartItems.length == 0
+                          ? Container()
+                          : ElevatedButton(
+                              onPressed: () {
+                                void checkOut() async {
+                                  await getCartItems();
+                                  setState(() {});
+                                  int flag = 1;
+                                  for (int i = 0; i < cartItems.length; i++) {
+                                    var data = await FirebaseFirestore.instance
+                                        .collection("Items")
+                                        .doc(widget.cartCount[i])
+                                        .get();
+                                    if (data.data()['available'] ==
+                                        "stockout") {
+                                      flag = 0;
+                                    }
+                                  }
+                                  if (flag == 0) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                            content: Text(
+                                                "Remove out of stock item")));
+                                    print(flag);
+                                  } else {
+                                    print(flag);
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                ConfirmViaCart(
+                                                  cartCount: widget.cartCount,
+                                                )));
+                                  }
+                                }
+
+                                checkOut();
+                              },
+                              style: ElevatedButton.styleFrom(
+                                  primary: pink,
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 50, vertical: 20)),
+                              child: Text("Proceed to Buy")),
+                      SizedBox(height: 10),
+                    ],
                   ),
                 ),
-                ElevatedButton(
-                    onPressed: () {
-                      void checkOut() async {
-                        await getCartItems();
-                        setState(() {});
-                        int flag = 1;
-                        for (int i = 0; i < cartItems.length; i++) {
-                          var data = await FirebaseFirestore.instance
-                              .collection("Items")
-                              .doc(widget.cartCount[i])
-                              .get();
-                          if (data.data()['available'] == "stockout") {
-                            flag = 0;
-                          }
-                        }
-                        if (flag == 0) {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text("Remove out of stock item")));
-                          print(flag);
-                        } else {
-                          print(flag);
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => ConfirmViaCart(
-                                        cartCount: widget.cartCount,
-                                      )));
-                        }
-                      }
-
-                      checkOut();
-                    },
-                    style: ElevatedButton.styleFrom(
-                        primary: pink,
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 50, vertical: 20)),
-                    child: Text("Proceed to Buy")),
-                SizedBox(height: 10),
-              ],
-            ),
-          ),
         ),
       ),
     );

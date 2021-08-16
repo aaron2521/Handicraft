@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:bloc/bloc.dart';
+import 'package:handicraft/customer_screen/customerCart.dart';
 import 'package:handicraft/customer_screen/customerhome.dart';
 import 'package:handicraft/customer_screen/myaccountspage.dart';
 import 'package:handicraft/customer_screen/myorderspage.dart';
@@ -8,6 +9,7 @@ enum NavigationEvents{
   HomePageClickedEvent,
   MyAccountsClickedEvent,
   MyOrdersClickedEvent,
+  // MyCartClickedEvent,
 }
 abstract class NavigationStates{}
 
@@ -29,6 +31,9 @@ class NavigationBloc extends Bloc<NavigationEvents, NavigationStates>{
       case NavigationEvents.MyOrdersClickedEvent:
         yield OrdersPage();
         break;
+      // case NavigationEvents.MyCartClickedEvent:
+      //   yield CustomerCart();
+      //   break;
     }
   }
 }

@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:handicraft/Widgets/color.dart';
+import 'package:handicraft/Widgets/progress.dart';
 import 'package:handicraft/sidebar_navigation/navigation_bloc.dart';
 import 'package:handicraft/splashScreen.dart';
 
@@ -15,7 +16,7 @@ class OrdersPage extends StatefulWidget with NavigationStates {
 
 class _OrdersPageState extends State<OrdersPage> {
   List<MyOrder> list = [];
-
+  bool pageloading = true;
   Future<void> getMyOrders() async {
     list.clear();
     var data = await FirebaseFirestore.instance
@@ -42,7 +43,7 @@ class _OrdersPageState extends State<OrdersPage> {
           imageUrl,
           data.docs[i].data()["seller"],
           sellerMobileNumber);
-      list.add(myorder);
+      list.insert(0, myorder);
     }
     setState(() {});
   }
@@ -50,7 +51,11 @@ class _OrdersPageState extends State<OrdersPage> {
   @override
   void initState() {
     super.initState();
-    getMyOrders();
+    getMyOrders().whenComplete(() {
+      setState(() {
+        pageloading = false;
+      });
+    });
   }
 
   @override
@@ -101,24 +106,26 @@ class _OrdersPageState extends State<OrdersPage> {
               //     color: Colors.lightGreenAccent,
               //   ),
               // ),
-              Expanded(
-                  child: list.length == 0
-                      ? Center(child: Text("No Orders"))
-                      : ListView.builder(
-                          itemCount: list.length,
-                          itemBuilder: (_, index) {
-                            return OrdersContainer(
-                                context,
-                                list[index].orderNo,
-                                list[index].itemName,
-                                list[index].totalAmount,
-                                list[index].status,
-                                list[index].date,
-                                list[index].imageUrl,
-                                list[index].sellerID,
-                                list[index].sellerPhone);
-                          },
-                        )),
+              pageloading
+                  ? Expanded(child: circularProgress())
+                  : Expanded(
+                      child: list.length == 0
+                          ? Center(child: Text("No Orders"))
+                          : ListView.builder(
+                              itemCount: list.length,
+                              itemBuilder: (_, index) {
+                                return OrdersContainer(
+                                    context,
+                                    list[index].orderNo,
+                                    list[index].itemName,
+                                    list[index].totalAmount,
+                                    list[index].status,
+                                    list[index].date,
+                                    list[index].imageUrl,
+                                    list[index].sellerID,
+                                    list[index].sellerPhone);
+                              },
+                            )),
             ],
           ),
         ),
@@ -314,14 +321,20 @@ class _OrdersPageState extends State<OrdersPage> {
                               ),
                             ),
                             onPressed: () {
-                              void cancelled() {
-                                FirebaseFirestore.instance
+                              Future<void> cancelled() async {
+                                await FirebaseFirestore.instance
                                     .collection('Orders')
                                     .doc(orderNo)
-                                    .update({"status": "Order Cancelled"});
-                                setState(() {
-                                  print(status);
-                                  // getMyOrders();
+                                    .update({"status": "Order Cancelled"}).then(
+                                        (value) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          content: Text("Order Cancelled")));
+                                }).whenComplete(() {
+                                  // setState(() {
+                                  //   print(status);
+                                  getMyOrders();
+                                  // });
                                 });
                               }
 

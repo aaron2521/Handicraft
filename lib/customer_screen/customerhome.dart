@@ -3,6 +3,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:handicraft/Widgets/color.dart';
+import 'package:handicraft/Widgets/progress.dart';
 import 'package:handicraft/customer_screen/customerCart.dart';
 import 'package:handicraft/data/data.dart';
 import 'package:handicraft/auth/login.dart';
@@ -105,7 +106,7 @@ class _CustomerHomeState extends State<CustomerHome> {
 
                               getCart();
                               return !streamSnapshot.hasData
-                                  ? CircularProgressIndicator()
+                                  ? CircularProgressIndicator(color: white)
                                   : Text(
                                       cartList.length.toString(),
                                       style: TextStyle(
@@ -141,7 +142,7 @@ class _CustomerHomeState extends State<CustomerHome> {
                   FirebaseFirestore.instance.collection("Items").snapshots(),
               builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
                 return !streamSnapshot.hasData
-                    ? Center(child: CircularProgressIndicator())
+                    ? Center(child: circularProgress())
                     : ListView.builder(
                         itemCount: streamSnapshot.data.docs.length,
                         itemBuilder: (_, index) {
@@ -192,7 +193,8 @@ class _CustomerHomeState extends State<CustomerHome> {
               child: CachedNetworkImage(
                 imageUrl: imageUrl,
                 progressIndicatorBuilder: (context, url, downloadProgress) =>
-                    CircularProgressIndicator(value: downloadProgress.progress),
+                    CircularProgressIndicator(
+                        color: pink, value: downloadProgress.progress),
                 errorWidget: (context, url, error) => Icon(Icons.error),
               ),
             ),

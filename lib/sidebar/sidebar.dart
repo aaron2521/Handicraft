@@ -180,22 +180,38 @@ class _SidebarState extends State<Sidebar>
                                             .MyOrdersClickedEvent);
                                   },
                                 ),
-                                ListTile(
-                                  leading: Icon(
-                                    Icons.account_balance,
-                                    color: cream,
-                                  ),
-                                  title: Text(
-                                    "My Accounts",
-                                    style: b_16cream(),
-                                  ),
-                                  onTap: () {
-                                    onIconPressed();
-                                    BlocProvider.of<NavigationBloc>(context)
-                                        .add(NavigationEvents
-                                            .MyAccountsClickedEvent);
-                                  },
-                                ),
+                                // ListTile(
+                                //   leading: Icon(
+                                //     Icons.shopping_cart,
+                                //     color: cream,
+                                //   ),
+                                //   title: Text(
+                                //     "My Cart",
+                                //     style: b_16cream(),
+                                //   ),
+                                //   onTap: () {
+                                //     onIconPressed();
+                                //     BlocProvider.of<NavigationBloc>(context)
+                                //         .add(NavigationEvents
+                                //             .MyCartClickedEvent);
+                                //   },
+                                // ),
+                                // ListTile(
+                                //   leading: Icon(
+                                //     Icons.account_balance,
+                                //     color: cream,
+                                //   ),
+                                //   title: Text(
+                                //     "My Accounts",
+                                //     style: b_16cream(),
+                                //   ),
+                                //   onTap: () {
+                                //     onIconPressed();
+                                //     BlocProvider.of<NavigationBloc>(context)
+                                //         .add(NavigationEvents
+                                //             .MyAccountsClickedEvent);
+                                //   },
+                                // ),
                                 Divider(
                                   height: 20,
                                   thickness: 1,
@@ -203,17 +219,17 @@ class _SidebarState extends State<Sidebar>
                                   indent: 15,
                                   endIndent: 15,
                                 ),
-                                ListTile(
-                                  leading: Icon(
-                                    Icons.settings,
-                                    color: cream,
-                                  ),
-                                  title: Text(
-                                    "Settings",
-                                    style: b_16cream(),
-                                  ),
-                                  onTap: () {},
-                                ),
+                                // ListTile(
+                                //   leading: Icon(
+                                //     Icons.settings,
+                                //     color: cream,
+                                //   ),
+                                //   title: Text(
+                                //     "Settings",
+                                //     style: b_16cream(),
+                                //   ),
+                                //   onTap: () {},
+                                // ),
                                 ListTile(
                                   leading: Icon(
                                     Icons.exit_to_app,
