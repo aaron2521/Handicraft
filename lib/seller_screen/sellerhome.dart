@@ -1,3 +1,4 @@
+import 'package:handicraft/Widgets/color.dart';
 import 'package:handicraft/seller_screen/addselleritems.dart';
 import 'package:handicraft/auth/login.dart';
 import 'package:flutter/material.dart';
@@ -18,11 +19,11 @@ class _SellerHomeState extends State<SellerHome> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     final _pageController = PageController();
     return Scaffold(
-      backgroundColor: Colors.black87,
+      backgroundColor: cream,
       bottomNavigationBar: CurvedNavigationBar(
         backgroundColor: Colors.transparent,
-        buttonBackgroundColor: Color(0xff282C31),
-        color: Color(0xff282C31),
+        buttonBackgroundColor: pink,
+        color: pink,
         index: 0,
         items: <Widget>[
           Icon(
@@ -72,7 +73,7 @@ class _SellerHomeState extends State<SellerHome> with TickerProviderStateMixin {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.black,
+        backgroundColor: pink,
         child: Icon(Icons.add),
         onPressed: () {
           Navigator.push(context,

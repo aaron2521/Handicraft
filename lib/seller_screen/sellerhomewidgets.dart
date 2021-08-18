@@ -1,6 +1,9 @@
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:handicraft/Widgets/color.dart';
+import 'package:handicraft/Widgets/progress.dart';
 import 'package:handicraft/splashScreen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -67,30 +70,25 @@ class _OrdersArrivedState extends State<OrdersArrived> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: SafeArea(
-        child: RefreshIndicator(
+      child: Scaffold(
+        backgroundColor: cream,
+        appBar: AppBar(
+          elevation: 0,
+          centerTitle: true,
+          title: Text(
+            "ORDERS",
+            style: GoogleFonts.koHo(
+                fontWeight: FontWeight.bold,
+                letterSpacing: 2,
+                fontSize: 38,
+                color: Colors.white38),
+          ),
+        ),
+        body: RefreshIndicator(
+          color: mehron,
           onRefresh: fetchOrders,
           child: Column(
             children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      color: Color(0xff282C31),
-                      child: Center(
-                        child: Text(
-                          "ORDERS",
-                          style: GoogleFonts.koHo(
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 2,
-                              fontSize: 38,
-                              color: Colors.white38),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
               Expanded(
                 child: Container(
                   child: list.length == 0
@@ -150,7 +148,7 @@ class _OrdersArrivedState extends State<OrdersArrived> {
       margin: EdgeInsets.all(10),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: Color(0xff282C31),
+          color: mehron,
           border: Border.all(color: Colors.black),
           boxShadow: [
             BoxShadow(
@@ -217,15 +215,15 @@ class _OrdersArrivedState extends State<OrdersArrived> {
                             ),
                           ],
                         ),
-                        Text(
-                          title,
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.koHo(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
+                        // Text(
+                        //   title,
+                        //   textAlign: TextAlign.center,
+                        //   style: GoogleFonts.koHo(
+                        //     fontSize: 20,
+                        //     fontWeight: FontWeight.bold,
+                        //     color: Colors.white,
+                        //   ),
+                        // ),
                       ],
                     ),
                   ],
@@ -358,53 +356,62 @@ class _ItemModifyState extends State<ItemModify> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return SafeArea(
-      child: Container(
-        color: Colors.black,
-        child: Column(
-          children: [
-            ClipPath(
-              clipper: OvalBottomBorderClipper(),
-              child: Container(
-                  color: Color(0xff282C31),
-                  height: 50,
-                  width: size.width,
-                  child: Center(
-                    child: Text(
-                      "Edit",
-                      style: GoogleFonts.pattaya(
-                        color: Colors.white,
-                        fontSize: 46,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  )),
+      child: Scaffold(
+        backgroundColor: cream,
+        body: GestureDetector(
+          onTap: () {
+            FocusScope.of(context).requestFocus(FocusNode());
+          },
+          child: Container(
+            color: cream,
+            child: Column(
+              children: [
+                ClipPath(
+                  clipper: OvalBottomBorderClipper(),
+                  child: Container(
+                      color: pink,
+                      height: 50,
+                      width: size.width,
+                      child: Center(
+                        child: Text(
+                          "Edit",
+                          style: GoogleFonts.pattaya(
+                            color: Colors.white,
+                            fontSize: 46,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      )),
+                ),
+                Expanded(
+                  child: StreamBuilder(
+                    stream: FirebaseFirestore.instance
+                        .collection("Items")
+                        .where("seller",
+                            isEqualTo: App.sharedPreferences.getString("email"))
+                        .snapshots(),
+                    builder:
+                        (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
+                      return !streamSnapshot.hasData
+                          ? Center(child: circularProgress())
+                          : ListView.builder(
+                              itemCount: streamSnapshot.data.docs.length,
+                              itemBuilder: (_, index) {
+                                return MyUI(
+                                    streamSnapshot.data.docs[index]['title'],
+                                    streamSnapshot.data.docs[index]['price'],
+                                    streamSnapshot.data.docs[index]['imageURL'],
+                                    streamSnapshot.data.docs[index].id,
+                                    streamSnapshot.data.docs[index]
+                                        ['available']);
+                              },
+                            );
+                    },
+                  ),
+                ),
+              ],
             ),
-            Expanded(
-              child: StreamBuilder(
-                stream: FirebaseFirestore.instance
-                    .collection("Items")
-                    .where("seller",
-                        isEqualTo: App.sharedPreferences.getString("email"))
-                    .snapshots(),
-                builder:
-                    (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
-                  return !streamSnapshot.hasData
-                      ? CircularProgressIndicator()
-                      : ListView.builder(
-                          itemCount: streamSnapshot.data.docs.length,
-                          itemBuilder: (_, index) {
-                            return MyUI(
-                                streamSnapshot.data.docs[index]['title'],
-                                streamSnapshot.data.docs[index]['price'],
-                                streamSnapshot.data.docs[index]['imageURL'],
-                                streamSnapshot.data.docs[index].id,
-                                streamSnapshot.data.docs[index]['available']);
-                          },
-                        );
-                },
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );
@@ -420,7 +427,7 @@ class _ItemModifyState extends State<ItemModify> {
       margin: EdgeInsets.all(10),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: Color(0xff282C31),
+          color: mehron,
           border: Border.all(color: Colors.black),
           boxShadow: [
             BoxShadow(
@@ -504,14 +511,29 @@ class _ItemModifyState extends State<ItemModify> {
               ),
             ],
           ),
-          TextFormField(
-            style: TextStyle(color: Colors.white),
-            decoration: InputDecoration(
-              hintText: "Updated Price",
-              hintStyle: TextStyle(color: Colors.white70),
-              contentPadding: EdgeInsets.only(left: 5),
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: TextFormField(
+              keyboardType: TextInputType.number,
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.digitsOnly
+              ],
+              style: TextStyle(color: pink),
+              cursorColor: pink,
+              decoration: InputDecoration(
+                  filled: true,
+                  fillColor: cream,
+                  hintStyle: TextStyle(color: pink),
+                  focusColor: pink,
+                  border: OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(),
+                  hintText: "Updated Price",
+                  prefixIcon: Icon(
+                    FontAwesomeIcons.rupeeSign,
+                    color: pink,
+                  )),
+              controller: _price,
             ),
-            controller: _price,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
