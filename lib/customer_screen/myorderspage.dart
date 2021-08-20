@@ -299,7 +299,8 @@ class _OrdersPageState extends State<OrdersPage> {
                           color: mehron,
                           fontSize: 18)),
                 ),
-                status == "Order Cancelled"
+                status == "Order Cancelled" ||
+                        status == "Order Cancelled by Seller"
                     ? Container()
                     : Padding(
                         padding: const EdgeInsets.only(

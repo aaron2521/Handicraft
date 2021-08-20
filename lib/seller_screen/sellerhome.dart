@@ -45,8 +45,10 @@ class _SellerHomeState extends State<SellerHome> with TickerProviderStateMixin {
               onPressed: () {
                 void logout() async {
                   await _googleSignIn.signOut().whenComplete(() {
-                    Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (context) => Login()));
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context) => Login()),
+                        (route) => false);
                   });
                 }
 

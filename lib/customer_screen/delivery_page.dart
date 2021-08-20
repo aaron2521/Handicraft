@@ -223,11 +223,20 @@ class _DeliveryPageState extends State<DeliveryPage> {
   }
 
   saveAllDataToFirebase() async {
+    // var data = await FirebaseFirestore.instance
+    //     .collection("users")
+    //     .where("phone", isEqualTo: App.sharedPreferences.get("email"))
+    //     .get();
+//         for (int i = 0; i < data.docs.length; i++){
+// var
+//         }
     await FirebaseFirestore.instance.collection("Orders").doc().set({
       "title": widget.title.trim(),
       "name": titleControllerName.text.trim(),
       "time": DateTime.now(),
+      "imageURL": widget.imageUrl,
       "itemId": widget.itemID.trim(),
+      "phone": "123123111",
       "price": widget.price.trim(),
       "seller": widget.seller.trim(),
       "customer": App.sharedPreferences.getString("email"),
@@ -296,7 +305,6 @@ class TextField1 extends StatelessWidget {
     );
   }
 }
-
 
 // class TextField12 extends StatefulWidget {
 //

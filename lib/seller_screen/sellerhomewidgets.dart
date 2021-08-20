@@ -95,38 +95,43 @@ class _OrdersArrivedState extends State<OrdersArrived> {
           child: Column(
             children: [
               Expanded(
-                child: pageloading
-                    ? Center(child: circularProgress())
-                    : Container(
-                        child: list.length == 0
-                            ? Center(
-                                child: Text(
-                                  "NO ORDERS",
-                                  style: GoogleFonts.koHo(
-                                      fontWeight: FontWeight.bold,
-                                      letterSpacing: 2,
-                                      fontSize: 38,
-                                      color: Colors.black26),
-                                ),
-                              )
-                            : ListView.builder(
-                                itemCount: list.length,
-                                itemBuilder: (_, index) {
-                                  return SellerUI(
-                                    list[index].title,
-                                    list[index].imageurl,
-                                    list[index].pincode,
-                                    list[index].price,
-                                    list[index].status,
-                                    list[index].id,
-                                    list[index].name,
-                                    list[index].phone,
-                                    list[index].address,
-                                    list[index].date,
-                                  );
-                                },
-                              ),
-                      ),
+                child: StreamBuilder(
+                    stream: FirebaseFirestore.instance
+                        .collection("Orders")
+                        .snapshots(),
+                    builder:
+                        (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
+                      return !streamSnapshot.hasData
+                          ? Center(child: circularProgress())
+                          : ListView.builder(
+                              itemCount: list.length,
+                              itemBuilder: (_, index) {
+                                return SellerUI(
+                                  streamSnapshot.data.docs[index]['title'],
+                                  streamSnapshot.data.docs[index]['imageURL'],
+                                  streamSnapshot.data.docs[index]['pinCode'],
+                                  streamSnapshot.data.docs[index]['price'],
+                                  streamSnapshot.data.docs[index]['status'],
+                                  streamSnapshot.data.docs[index].id,
+                                  streamSnapshot.data.docs[index]['name'],
+                                  streamSnapshot.data.docs[index]['phone'],
+                                  streamSnapshot.data.docs[index]['address'],
+                                  streamSnapshot.data.docs[index]['time'],
+                                  // list[index].title,
+                                  // streamSnapshot
+                                  // list[index].imageurl,
+                                  // list[index].pincode,
+                                  // list[index].price,
+                                  // list[index].status,
+                                  // list[index].id,
+                                  // list[index].name,
+                                  // list[index].phone,
+                                  // list[index].address,
+                                  // list[index].date,
+                                );
+                              },
+                            );
+                    }),
               )
             ],
           ),
@@ -184,6 +189,7 @@ class _OrdersArrivedState extends State<OrdersArrived> {
                   ),
                 ),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Container(
                       padding: EdgeInsets.all(10),
@@ -207,6 +213,26 @@ class _OrdersArrivedState extends State<OrdersArrived> {
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
                               color: Colors.red,
+                            ),
+                          ),
+                        if (status == "Order Shipped")
+                          Text(
+                            status,
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.koHo(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.green,
+                            ),
+                          ),
+                        if (status == "Order Placed")
+                          Text(
+                            "New Oreder",
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.koHo(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.yellow,
                             ),
                           ),
                         Text(
@@ -302,44 +328,68 @@ class _OrdersArrivedState extends State<OrdersArrived> {
                         color: Colors.white,
                       ),
                     ),
-                    if (status != "Order Cancelled")
-                      Row(
-                        children: [
-                          ElevatedButton(
-                              onPressed: () {
-                                void shipped() {
-                                  FirebaseFirestore.instance
-                                      .collection('Orders')
-                                      .doc(id)
-                                      .update({"status": "Order Shipped"});
-                                }
+                    (status == "Order Cancelled" || status == "Order Shipped")
+                        ? Container()
+                        : Row(
+                            children: [
+                              ElevatedButton(
+                                  onPressed: () {
+                                    void shipped() {
+                                      FirebaseFirestore.instance
+                                          .collection('Orders')
+                                          .doc(id)
+                                          .update({
+                                        "status": "Order Shipped"
+                                      }).whenComplete(() {
+                                        setState(() {
+                                          // fetchOrders();
+                                        });
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(SnackBar(
+                                          content: Text("Order shipped"),
+                                          duration: Duration(seconds: 2),
+                                        ));
+                                      });
+                                    }
 
-                                shipped();
-                              },
-                              style: ElevatedButton.styleFrom(
-                                  primary: Colors.black54),
-                              child: Text("Order Shipped")),
-                          ElevatedButton(
-                              onPressed: () {
-                                void cancelled() {
-                                  FirebaseFirestore.instance
-                                      .collection('Orders')
-                                      .doc(id)
-                                      .update({
-                                    "status": "Order Cancelled by Seller"
-                                  });
-                                }
+                                    shipped();
+                                    setState(() {});
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                      primary: Colors.black54),
+                                  child: Text("Order Shipped")),
+                              ElevatedButton(
+                                  onPressed: () {
+                                    void cancelled() {
+                                      FirebaseFirestore.instance
+                                          .collection('Orders')
+                                          .doc(id)
+                                          .update({
+                                        "status": "Order Cancelled by Seller"
+                                      }).whenComplete(() {
+                                        setState(() {
+                                          // fetchOrders();
+                                        });
 
-                                cancelled();
-                              },
-                              style: ElevatedButton.styleFrom(
-                                primary: Colors.black54,
-                              ),
-                              child: Text("Cancel Order")),
-                        ],
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      )
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(SnackBar(
+                                          content: Text("Order cancelled"),
+                                          duration: Duration(seconds: 2),
+                                        ));
+                                      });
+                                    }
+
+                                    cancelled();
+                                    setState(() {});
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    primary: Colors.black54,
+                                  ),
+                                  child: Text("Cancel Order")),
+                            ],
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          )
                   ],
                 ))
               ],

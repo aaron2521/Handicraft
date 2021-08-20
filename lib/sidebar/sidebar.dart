@@ -243,10 +243,11 @@ class _SidebarState extends State<Sidebar>
                                     await _googleSignIn
                                         .signOut()
                                         .whenComplete(() {
-                                      Navigator.pushReplacement(
+                                      Navigator.pushAndRemoveUntil(
                                           context,
                                           MaterialPageRoute(
-                                              builder: (context) => Login()));
+                                              builder: (context) => Login()),
+                                          (route) => false);
                                     });
                                   },
                                 ),
