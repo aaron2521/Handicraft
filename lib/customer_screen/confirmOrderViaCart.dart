@@ -30,6 +30,7 @@ class _ConfirmViaCartState extends State<ConfirmViaCart> {
       CartCards cart = CartCards(
           title: data.data()['title'],
           price: data.data()['price'],
+          imageURL: data.data()['imageURL'],
           itemID: data.id,
           available: data.data()['available'],
           seller: data.data()['seller']);
@@ -43,6 +44,7 @@ class _ConfirmViaCartState extends State<ConfirmViaCart> {
   final _formKey = GlobalKey<FormState>();
   final _state = TextEditingController();
   final _city = TextEditingController();
+  final phonenoC = TextEditingController();
   final _locality = TextEditingController();
   final _pinCode = TextEditingController();
   final titleControllerName = TextEditingController();
@@ -86,6 +88,10 @@ class _ConfirmViaCartState extends State<ConfirmViaCart> {
                                     icon: Icons.person,
                                     title: "Name",
                                     titleController: titleControllerName),
+                                TextField1(
+                                    icon: Icons.phone,
+                                    title: "Phone number",
+                                    titleController: phonenoC),
                                 Container(
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
@@ -243,7 +249,9 @@ class _ConfirmViaCartState extends State<ConfirmViaCart> {
         await FirebaseFirestore.instance.collection("Orders").doc().set({
           "title": cartItems[i].title,
           "name": titleControllerName.text.trim(),
+          "imageURL": cartItems[i].imageURL,
           "itemId": cartItems[i].itemID,
+          "phone": phonenoC.text.trim(),
           "price": cartItems[i].price,
           "seller": cartItems[i].seller,
           "customer": App.sharedPreferences.getString("email"),
@@ -253,7 +261,7 @@ class _ConfirmViaCartState extends State<ConfirmViaCart> {
               _city.text.trim() +
               ", " +
               _state.text.trim(),
-          "status": "OrderPlaced",
+          "status": "Order Placed",
           "time": DateTime.now(),
         });
       }
@@ -272,6 +280,12 @@ class _ConfirmViaCartState extends State<ConfirmViaCart> {
 }
 
 class CartCards {
-  String title, price, itemID, available, seller;
-  CartCards({this.title, this.price, this.itemID, this.available, this.seller});
+  String title, price, itemID, available, seller, imageURL;
+  CartCards(
+      {this.title,
+      this.price,
+      this.itemID,
+      this.available,
+      this.seller,
+      this.imageURL});
 }

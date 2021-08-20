@@ -22,6 +22,7 @@ class DeliveryPage extends StatefulWidget {
 class _DeliveryPageState extends State<DeliveryPage> {
   final titleController1 = TextEditingController();
   final titleControllerName = TextEditingController();
+  final phonenoC = TextEditingController();
   final titleController2 = TextEditingController();
   final titleController3 = TextEditingController();
   final titleController4 = TextEditingController();
@@ -65,6 +66,10 @@ class _DeliveryPageState extends State<DeliveryPage> {
                                       icon: Icons.person,
                                       title: "Name",
                                       titleController: titleControllerName),
+                                  TextField1(
+                                      icon: Icons.phone,
+                                      title: "Phone number",
+                                      titleController: phonenoC),
                                   Container(
                                     child: Padding(
                                       padding: const EdgeInsets.all(8.0),
@@ -236,7 +241,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
       "time": DateTime.now(),
       "imageURL": widget.imageUrl,
       "itemId": widget.itemID.trim(),
-      "phone": "123123111",
+      "phone": phonenoC.text.trim(),
       "price": widget.price.trim(),
       "seller": widget.seller.trim(),
       "customer": App.sharedPreferences.getString("email"),

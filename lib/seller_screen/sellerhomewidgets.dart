@@ -611,42 +611,66 @@ class _ItemModifyState extends State<ItemModify> {
               ElevatedButton(
                 style: ElevatedButton.styleFrom(primary: Colors.black12),
                 onPressed: () {
-                  void update() async {
-                    await FirebaseFirestore.instance
-                        .collection("Items")
-                        .doc(id)
-                        .update({"price": _price.text.trim()}).then((value) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("Price Updated")));
-                    });
-                  }
+                  if (_price.text.trim().isNotEmpty) {
+                    void update() async {
+                      await FirebaseFirestore.instance
+                          .collection("Items")
+                          .doc(id)
+                          .update({"price": _price.text.trim()}).then((value) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("Price Updated")));
+                      });
+                    }
 
-                  update();
+                    update();
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content:
+                            Text("Can not update empty price for " + title)));
+                  }
                 },
                 child: Text('Update'),
               ),
               ElevatedButton(
-                  style: ElevatedButton.styleFrom(primary: Colors.black12),
-                  onPressed: () {
-                    void markStockOut() async {
-                      await FirebaseFirestore.instance
-                          .collection("Items")
-                          .doc(id)
-                          .update({"available": "stockout"});
-                    }
+                style: ElevatedButton.styleFrom(primary: Colors.black12),
+                onPressed: () {
+                  void markStockOut() async {
+                    await FirebaseFirestore.instance
+                        .collection("Items")
+                        .doc(id)
+                        .update({"available": "stockout"});
+                  }
 
-                    void markStockin() async {
-                      await FirebaseFirestore.instance
-                          .collection("Items")
-                          .doc(id)
-                          .update({"available": "instock"});
-                    }
+                  void markStockin() async {
+                    await FirebaseFirestore.instance
+                        .collection("Items")
+                        .doc(id)
+                        .update({"available": "instock"});
+                  }
 
-                    status == "instock" ? markStockOut() : markStockin();
-                  },
-                  child: Text(status == "instock"
-                      ? "Mark out of stock"
-                      : "Mark stock available")),
+                  status == "instock" ? markStockOut() : markStockin();
+                },
+                child: Text(status == "instock"
+                    ? "Mark out of stock"
+                    : "Mark stock available"),
+              ),
+              IconButton(
+                onPressed: () {
+                  print("deleted btn tap for " + title);
+                  void delete() async {
+                    await FirebaseFirestore.instance
+                        .collection("Items")
+                        .doc(id)
+                        .delete();
+                  }
+
+                  delete();
+                },
+                icon: Icon(
+                  Icons.delete,
+                  color: Colors.red,
+                ),
+              ),
             ],
           ),
         ],
