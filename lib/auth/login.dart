@@ -42,7 +42,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                 child: Text(
                   "Market Place",
                   style: TextStyle(
-                      fontSize: height * 0.08,
+                      fontSize: width * 0.14,
                       fontFamily: "Pacifico",
                       color: Colors.black),
                 ),

@@ -74,7 +74,7 @@ class _SplashScreenState extends State<SplashScreen> {
             margin: EdgeInsets.only(top: height * 0.15),
             child: Text(
               "Market Place",
-              style: TextStyle(fontSize: height * 0.08, fontFamily: "Pacifico"),
+              style: TextStyle(fontSize: width * 0.14, fontFamily: "Pacifico"),
             ),
           ),
         ],
