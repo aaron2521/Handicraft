@@ -36,6 +36,11 @@ class _SellerHomeState extends State<SellerHome> with TickerProviderStateMixin {
             size: 20,
             color: Colors.white,
           ),
+          Icon(
+            Icons.add,
+            size: 20,
+            color: Colors.white,
+          ),
           IconButton(
               icon: Icon(
                 Icons.power_settings_new,
@@ -66,7 +71,7 @@ class _SellerHomeState extends State<SellerHome> with TickerProviderStateMixin {
         child: PageView(
           physics: NeverScrollableScrollPhysics(),
           controller: _pageController,
-          children: [OrdersArrived(), ItemModify()],
+          children: [OrdersArrived(), ItemModify(), AddItemsBySeller()],
           onPageChanged: (int index) {
             setState(() {
               _pageController.jumpToPage(index);
@@ -74,14 +79,14 @@ class _SellerHomeState extends State<SellerHome> with TickerProviderStateMixin {
           },
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: pink,
-        child: Icon(Icons.add),
-        onPressed: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => AddItemsBySeller()));
-        },
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   backgroundColor: pink,
+      //   child: Icon(Icons.add),
+      //   onPressed: () {
+      //     Navigator.push(context,
+      //         MaterialPageRoute(builder: (context) => AddItemsBySeller()));
+      //   },
+      // ),
     );
   }
 }

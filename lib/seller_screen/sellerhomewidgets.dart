@@ -65,11 +65,11 @@ class _OrdersArrivedState extends State<OrdersArrived> {
   @override
   void initState() {
     super.initState();
-    fetchOrders().whenComplete(() {
-      setState(() {
-        pageloading = false;
-      });
-    });
+    // fetchOrders().whenComplete(() {
+    //   setState(() {
+    //     pageloading = false;
+    //   });
+    // });
   }
 
   @override
@@ -98,13 +98,15 @@ class _OrdersArrivedState extends State<OrdersArrived> {
                 child: StreamBuilder(
                     stream: FirebaseFirestore.instance
                         .collection("Orders")
+                        .where("seller",
+                            isEqualTo: App.sharedPreferences.getString("email"))
                         .snapshots(),
                     builder:
                         (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
                       return !streamSnapshot.hasData
                           ? Center(child: circularProgress())
                           : ListView.builder(
-                              itemCount: list.length,
+                              itemCount: streamSnapshot.data.docs.length,
                               itemBuilder: (_, index) {
                                 return SellerUI(
                                   streamSnapshot.data.docs[index]['title'],
