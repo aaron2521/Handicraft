@@ -202,9 +202,9 @@ class _OrdersArrivedState extends State<OrdersArrived> {
                         fit: BoxFit.cover,
                       ),
                     ),
-                    SizedBox(
-                      width: 20,
-                    ),
+                    // SizedBox(
+                    //   width: 10,
+                    // ),
                     Column(
                       children: [
                         if (status == "Order Cancelled")
@@ -229,7 +229,7 @@ class _OrdersArrivedState extends State<OrdersArrived> {
                           ),
                         if (status == "Order Placed")
                           Text(
-                            "New Oreder",
+                            "New Order",
                             textAlign: TextAlign.center,
                             style: GoogleFonts.koHo(
                               fontSize: 15,
@@ -237,13 +237,29 @@ class _OrdersArrivedState extends State<OrdersArrived> {
                               color: Colors.yellow,
                             ),
                           ),
-                        Text(
-                          title,
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.koHo(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                        if (status == "Order Cancelled by Seller")
+                          Text(
+                            "Order cancelled by us",
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.koHo(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.blueAccent,
+                            ),
+                          ),
+                        Container(
+                          width: size.width * 0.5 - 30,
+                          // color: Colors.green,
+                          child: Text(
+                            title,
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.koHo(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                            softWrap: true,
                           ),
                         ),
                         Row(
@@ -330,7 +346,9 @@ class _OrdersArrivedState extends State<OrdersArrived> {
                         color: Colors.white,
                       ),
                     ),
-                    (status == "Order Cancelled" || status == "Order Shipped")
+                    (status == "Order Cancelled" ||
+                            status == "Order Shipped" ||
+                            status == "Order Cancelled by Seller")
                         ? Container()
                         : Row(
                             children: [
@@ -533,54 +551,67 @@ class _ItemModifyState extends State<ItemModify> {
           //   placeholder: (context, url) => CircularProgressIndicator(),
           //   errorWidget: (context, url, error) => Icon(Icons.error),
           // ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'Item:',
-                style: GoogleFonts.koHo(
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text(
+                  'Item:',
+                  style: GoogleFonts.koHo(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
-              ),
-              Padding(padding: EdgeInsets.all(5.0)),
-              Text(
-                title,
-                style: GoogleFonts.koHo(
-                  fontSize: 25,
-                  color: Colors.white,
+                Padding(padding: EdgeInsets.all(5.0)),
+                Container(
+                  // alignment: Alig,
+                  width: size.width * 0.7,
+                  child: Text(
+                    title,
+                    style: GoogleFonts.koHo(
+                      fontSize: 20,
+                      color: Colors.white,
+                    ),
+                    // textAlign: TextAlign.center,
+                    overflow: TextOverflow.ellipsis,
+                    softWrap: true,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                "Price:",
-                style: GoogleFonts.koHo(
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  "Price:",
+                  style: GoogleFonts.koHo(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                Padding(padding: EdgeInsets.all(5.0)),
+                Icon(
+                  FontAwesomeIcons.rupeeSign,
+                  size: 20.0,
                   color: Colors.white,
                 ),
-              ),
-              Padding(padding: EdgeInsets.all(5.0)),
-              Icon(
-                FontAwesomeIcons.rupeeSign,
-                size: 21.0,
-                color: Colors.white,
-              ),
-              Text(
-                price,
-                style: GoogleFonts.koHo(
-                  fontSize: 25,
-                  color: Colors.white,
+                Text(
+                  price,
+                  style: GoogleFonts.koHo(
+                    fontSize: 20,
+                    color: Colors.white,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
           Padding(
             padding: const EdgeInsets.all(10.0),
@@ -634,7 +665,8 @@ class _ItemModifyState extends State<ItemModify> {
                 child: Text('Update'),
               ),
               ElevatedButton(
-                style: ElevatedButton.styleFrom(primary: Colors.black12),
+                style: ElevatedButton.styleFrom(
+                    primary: status == "instock" ? Colors.green : Colors.red),
                 onPressed: () {
                   void markStockOut() async {
                     await FirebaseFirestore.instance

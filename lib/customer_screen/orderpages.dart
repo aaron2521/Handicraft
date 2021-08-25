@@ -153,11 +153,15 @@ class _OrdersPagesState extends State<OrdersPages> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(widget.title,
-                          style: GoogleFonts.koHo(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 36)),
+                      Text(
+                        widget.title,
+                        style: GoogleFonts.koHo(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 25),
+                        // overflow: TextOverflow.ellipsis,
+                        // softWrap: true,
+                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [

@@ -351,12 +351,18 @@ class _CustomerHomeState extends State<CustomerHome> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Flexible(
-                  child: Text(title,
-                      style: GoogleFonts.koHo(
-                          color: mehron,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18)),
+                Container(
+                  width: size.width * 0.35,
+                  // color: Colors.green,
+                  child: Text(
+                    title,
+                    style: GoogleFonts.koHo(
+                        color: mehron,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18),
+                    overflow: TextOverflow.ellipsis,
+                    softWrap: true,
+                  ),
                 ),
                 // Spacer(),
                 SizedBox(height: 20),
@@ -428,11 +434,19 @@ class _CustomerHomeState extends State<CustomerHome> {
               ),
               child: Row(
                 children: [
-                  Text(title,
+                  Container(
+                    width: size.width * 0.6,
+                    // color: cream,
+                    child: Text(
+                      title,
                       style: GoogleFonts.koHo(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
-                          fontSize: 18)),
+                          fontSize: 18),
+                      overflow: TextOverflow.ellipsis,
+                      softWrap: true,
+                    ),
+                  ),
                   Spacer(),
                   Text("₹ " + price,
                       style: GoogleFonts.koHo(
