@@ -29,6 +29,7 @@ class _RegisterState extends State<Register> with TickerProviderStateMixin {
   // SharedPreferences sharedPreferences;
   GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
   final _number = TextEditingController();
+  final _upi = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
@@ -182,8 +183,42 @@ class _RegisterState extends State<Register> with TickerProviderStateMixin {
                           ],
                         ),
                       ),
+                      _role == "seller"
+                          ? Container(
+                              margin: EdgeInsets.all(10),
+                              padding: EdgeInsets.all(8),
+                              // height: 60,
+                              width: width * 0.75,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                border:
+                                    Border.all(color: Colors.black26, width: 2),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Center(
+                                child: TextFormField(
+                                  keyboardType: TextInputType.number,
+                                  inputFormatters: <TextInputFormatter>[
+                                    FilteringTextInputFormatter.digitsOnly
+                                  ],
+                                  controller: _upi,
+                                  decoration: InputDecoration(
+                                    hintText: "Enter Upi Id",
+                                    border: InputBorder.none,
+                                    prefixIcon: Icon(Icons.payments),
+                                  ),
+                                  validator: (text) {
+                                    if ((text.trim().length == 5) &&
+                                        (isNumeric(text.trim()))) {
+                                      return null;
+                                    } else
+                                      return "example@upi.com";
+                                  },
+                                ),
+                              ))
+                          : Container(),
                       SizedBox(
-                        height: 40,
+                        height: _role == "seller" ? 20 : 40,
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -228,7 +263,10 @@ class _RegisterState extends State<Register> with TickerProviderStateMixin {
                                   "email": widget.email,
                                   "phone": _number.text.trim(),
                                   "type": _role,
-                                  "cart": _role == "customer" ? [] : null
+                                  "cart": _role == "customer" ? [] : null,
+                                  "upi": _role == "seller"
+                                      ? _upi.text.trim()
+                                      : null
                                 }).then((value) {
                                   if (_role == 'seller') {
                                     Navigator.pushReplacement(

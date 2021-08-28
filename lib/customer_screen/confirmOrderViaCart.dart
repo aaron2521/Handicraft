@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:handicraft/Widgets/color.dart';
+import 'package:handicraft/Widgets/fonts.dart';
 import 'package:handicraft/customer_screen/orderpages.dart';
 import 'package:handicraft/customer_screen/customerhome.dart';
 import 'package:handicraft/sidebar/sidebar_layout.dart';
@@ -19,6 +20,8 @@ class ConfirmViaCart extends StatefulWidget {
 }
 
 class _ConfirmViaCartState extends State<ConfirmViaCart> {
+  int selectedRadioTile = 0;
+
   List<CartCards> cartItems = [];
   Future<void> getCartItems() async {
     cartItems.clear();
@@ -48,6 +51,29 @@ class _ConfirmViaCartState extends State<ConfirmViaCart> {
   final _locality = TextEditingController();
   final _pinCode = TextEditingController();
   final titleControllerName = TextEditingController();
+
+  // QuerySnapshot data;
+  // bool pageLodaing = true;
+
+  // Future getUpi() async {
+  //   data = await FirebaseFirestore.instance
+  //       .collection("users")
+  //       .where("email", isEqualTo: cartItems)
+  //       .get();
+  //   // print(data);
+  //   print(data.docs[0]["upi"]);
+  // }
+
+  // @override
+  // Future<void> initState() {
+  //   super.initState();
+  //   getUpi().whenComplete(() {
+  //     setState(() {
+  //       pageLodaing = false;
+  //     });
+  //   });
+  //   // getData();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +109,24 @@ class _ConfirmViaCartState extends State<ConfirmViaCart> {
                         children: [
                           Container(
                             child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 20.0),
+                                  child: Text("Payment Type"),
+                                ),
+                                RadioListTile(
+                                    subtitle: Text("Available"),
+                                    activeColor: Colors.black,
+                                    value: 0,
+                                    groupValue: selectedRadioTile,
+                                    onChanged: (val) {
+                                      setState(() {
+                                        selectedRadioTile = 0;
+                                      });
+                                    },
+                                    title: Text("COD", style: b_14pink())),
                                 TextField1(
                                     icon: Icons.person,
                                     title: "Name",
@@ -247,6 +290,7 @@ class _ConfirmViaCartState extends State<ConfirmViaCart> {
       print(flag);
       for (int i = 0; i < cartItems.length; i++) {
         await FirebaseFirestore.instance.collection("Orders").doc().set({
+          "Payment": selectedRadioTile == 0 ? "COD" : "UPI",
           "title": cartItems[i].title,
           "name": titleControllerName.text.trim(),
           "imageURL": cartItems[i].imageURL,

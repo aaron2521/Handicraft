@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:handicraft/Widgets/color.dart';
+import 'package:handicraft/Widgets/fonts.dart';
 import 'package:handicraft/Widgets/progress.dart';
 import 'package:handicraft/splashScreen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -17,6 +18,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:expansion_card/expansion_card.dart';
 import 'package:expand_widget/expand_widget.dart';
+import 'package:intl/intl.dart';
 
 class OrdersArrived extends StatefulWidget {
   @override
@@ -26,6 +28,7 @@ class OrdersArrived extends StatefulWidget {
 class _OrdersArrivedState extends State<OrdersArrived> {
   bool pageloading = true;
   List<SellerPanel> list = [];
+  final df = new DateFormat('dd-MM-yyyy hh:mm a');
 
   Future<void> fetchOrders() async {
     list.clear();
@@ -119,6 +122,7 @@ class _OrdersArrivedState extends State<OrdersArrived> {
                                   streamSnapshot.data.docs[index]['phone'],
                                   streamSnapshot.data.docs[index]['address'],
                                   streamSnapshot.data.docs[index]['time'],
+                                  streamSnapshot.data.docs[index]['Payment'],
                                   // list[index].title,
                                   // streamSnapshot
                                   // list[index].imageurl,
@@ -152,7 +156,8 @@ class _OrdersArrivedState extends State<OrdersArrived> {
       String name,
       String phone,
       String address,
-      Timestamp date) {
+      Timestamp date,
+      String payment) {
     Size size = MediaQuery.of(context).size;
     print(price);
     print(pincode);
@@ -292,6 +297,7 @@ class _OrdersArrivedState extends State<OrdersArrived> {
                 ),
                 ExpandChild(
                     child: Column(
+                  // crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       name,
@@ -330,21 +336,27 @@ class _OrdersArrivedState extends State<OrdersArrived> {
                       ),
                     ),
                     Text(
-                      date.toDate().day.toString() +
-                          "/" +
-                          date.toDate().month.toString() +
-                          "/" +
-                          date.toDate().year.toString() +
-                          '    ' +
-                          date.toDate().toLocal().hour.toString() +
-                          ':' +
-                          date.toDate().minute.toString(),
+                      df.format(date.toDate()),
+                      // date.toString(),
+                      // date.toDate().day.toString() +
+                      //     "/" +
+                      //     date.toDate().month.toString() +
+                      //     "/" +
+                      //     date.toDate().year.toString() +
+                      //     '    ' +
+                      //     date.toDate().toLocal().hour.toString() +
+                      //     ':' +
+                      //     date.toDate().minute.toString(),
                       textAlign: TextAlign.center,
                       style: GoogleFonts.koHo(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
+                    ),
+                    Text(
+                      "Payment Type: " + payment,
+                      style: b_16cream(),
                     ),
                     (status == "Order Cancelled" ||
                             status == "Order Shipped" ||

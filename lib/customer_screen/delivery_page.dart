@@ -1,8 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:handicraft/Widgets/color.dart';
+import 'package:handicraft/Widgets/fonts.dart';
+import 'package:handicraft/Widgets/progress.dart';
 import 'package:handicraft/customer_screen/customerhome.dart';
+import 'package:handicraft/customer_screen/payment.dart';
 import 'package:handicraft/sidebar/sidebar_layout.dart';
 import 'package:handicraft/splashScreen.dart';
 import 'package:http/http.dart' as http;
@@ -26,9 +30,35 @@ class _DeliveryPageState extends State<DeliveryPage> {
   final titleController2 = TextEditingController();
   final titleController3 = TextEditingController();
   final titleController4 = TextEditingController();
+
+  int selectedRadioTile = 0;
+
   // bool report;
   bool processing = false;
   final _formKey = GlobalKey<FormState>();
+  QuerySnapshot data;
+  bool pageLodaing = true;
+
+  Future getUpi() async {
+    data = await FirebaseFirestore.instance
+        .collection("users")
+        .where("email", isEqualTo: widget.seller)
+        .get();
+    // print(data);
+    print(data.docs[0]["upi"]);
+  }
+
+  @override
+  Future<void> initState() {
+    super.initState();
+    getUpi().whenComplete(() {
+      setState(() {
+        pageLodaing = false;
+      });
+    });
+    // getData();
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -47,7 +77,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
         ),
       ),
       body: processing == true
-          ? Center(child: CircularProgressIndicator())
+          ? Center(child: circularProgress())
           : Container(
               height: size.height,
               padding: EdgeInsets.symmetric(horizontal: 10),
@@ -58,7 +88,51 @@ class _DeliveryPageState extends State<DeliveryPage> {
                     Form(
                         key: _formKey,
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 20.0),
+                              child: Text("Payment Type"),
+                            ),
+                            RadioListTile(
+                                subtitle: Text("Available"),
+                                activeColor: Colors.black,
+                                value: 0,
+                                groupValue: selectedRadioTile,
+                                onChanged: (val) {
+                                  setState(() {
+                                    selectedRadioTile = 0;
+                                  });
+                                },
+                                title: Text("COD", style: b_14pink())),
+                            pageLodaing
+                                ? Center(child: circularProgress())
+                                : RadioListTile(
+                                    subtitle:
+                                        data.docs[0]["upi"].toString() != null
+                                            ? Text("Available")
+                                            : Text("Unavailable"),
+                                    activeColor: Colors.black,
+                                    value: 1,
+                                    groupValue: selectedRadioTile,
+                                    onChanged: (val) {
+                                      setState(() {
+                                        selectedRadioTile = 1;
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) => Payment(
+                                                      amt: 1,
+                                                      upiId: data.docs[0]
+                                                          ["upi"],
+                                                      reciverName: App
+                                                          .sharedPreferences
+                                                          .getString("email"),
+                                                    )));
+                                      });
+                                    },
+                                    title: Text("UPI", style: b_14pink())),
                             Container(
                               child: Column(
                                 children: [
@@ -195,7 +269,8 @@ class _DeliveryPageState extends State<DeliveryPage> {
                           ),
                         ),
                       ),
-                    )
+                    ),
+                    SizedBox(height: 10),
                   ],
                 ),
               ),
@@ -237,6 +312,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
 //         }
     await FirebaseFirestore.instance.collection("Orders").doc().set({
       "title": widget.title.trim(),
+      "Payment": selectedRadioTile == 0 ? "COD" : "UPI",
       "name": titleControllerName.text.trim(),
       "time": DateTime.now(),
       "imageURL": widget.imageUrl,
