@@ -36,7 +36,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_bloc: ^7.0.0
-  flutter_button: ^0.0.4
+  # flutter_button: ^0.0.4
   flutter_custom_clippers: ^1.1.2
   font_awesome_flutter: ^8.10.1
   google_fonts: ^2.1.0
@@ -45,7 +45,7 @@ dependencies:
   image_cropper: ^1.4.0
   image_picker: ^0.7.4
   intl: ^0.17.0
-  rxdart: ^0.26.0
+  # rxdart: ^0.26.0
   shared_preferences: ^2.0.5
   string_validator: ^0.3.0
   upi_india: ^3.0.1

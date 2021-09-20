@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -106,33 +108,34 @@ class _DeliveryPageState extends State<DeliveryPage> {
                                   });
                                 },
                                 title: Text("COD", style: b_14pink())),
-                            pageLodaing
-                                ? Center(child: circularProgress())
-                                : RadioListTile(
-                                    subtitle:
-                                        data.docs[0]["upi"].toString() != null
-                                            ? Text("Available")
-                                            : Text("Unavailable"),
-                                    activeColor: Colors.black,
-                                    value: 1,
-                                    groupValue: selectedRadioTile,
-                                    onChanged: (val) {
-                                      setState(() {
-                                        selectedRadioTile = 1;
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) => Payment(
-                                                      amt: 1,
-                                                      upiId: data.docs[0]
-                                                          ["upi"],
-                                                      reciverName: App
-                                                          .sharedPreferences
-                                                          .getString("email"),
-                                                    )));
-                                      });
-                                    },
-                                    title: Text("UPI", style: b_14pink())),
+                            if (Platform.isAndroid)
+                              pageLodaing
+                                  ? Center(child: circularProgress())
+                                  : RadioListTile(
+                                      subtitle:
+                                          data.docs[0]["upi"].toString() != null
+                                              ? Text("Available")
+                                              : Text("Unavailable"),
+                                      activeColor: Colors.black,
+                                      value: 1,
+                                      groupValue: selectedRadioTile,
+                                      onChanged: (val) {
+                                        setState(() {
+                                          selectedRadioTile = 1;
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) => Payment(
+                                                        amt: 1,
+                                                        upiId: data.docs[0]
+                                                            ["upi"],
+                                                        reciverName: App
+                                                            .sharedPreferences
+                                                            .getString("email"),
+                                                      )));
+                                        });
+                                      },
+                                      title: Text("UPI", style: b_14pink())),
                             Container(
                               child: Column(
                                 children: [
