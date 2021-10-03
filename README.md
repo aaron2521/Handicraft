@@ -1,6 +1,6 @@
-# handicraft
+# Market palce
 
-A new Flutter application.
+A Flutter application which is going to help people sell and purchase product online.
 
 ## Getting Started
 

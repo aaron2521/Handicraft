@@ -1,3 +1,4 @@
+import 'package:handicraft/Widgets/color.dart';
 import 'package:handicraft/seller_screen/addselleritems.dart';
 import 'package:handicraft/auth/login.dart';
 import 'package:flutter/material.dart';
@@ -18,11 +19,11 @@ class _SellerHomeState extends State<SellerHome> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     final _pageController = PageController();
     return Scaffold(
-      backgroundColor: Colors.black87,
+      backgroundColor: cream,
       bottomNavigationBar: CurvedNavigationBar(
         backgroundColor: Colors.transparent,
-        buttonBackgroundColor: Color(0xff282C31),
-        color: Color(0xff282C31),
+        buttonBackgroundColor: pink,
+        color: pink,
         index: 0,
         items: <Widget>[
           Icon(
@@ -35,6 +36,11 @@ class _SellerHomeState extends State<SellerHome> with TickerProviderStateMixin {
             size: 20,
             color: Colors.white,
           ),
+          Icon(
+            Icons.add,
+            size: 20,
+            color: Colors.white,
+          ),
           IconButton(
               icon: Icon(
                 Icons.power_settings_new,
@@ -44,8 +50,10 @@ class _SellerHomeState extends State<SellerHome> with TickerProviderStateMixin {
               onPressed: () {
                 void logout() async {
                   await _googleSignIn.signOut().whenComplete(() {
-                    Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (context) => Login()));
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context) => Login()),
+                        (route) => false);
                   });
                 }
 
@@ -63,7 +71,7 @@ class _SellerHomeState extends State<SellerHome> with TickerProviderStateMixin {
         child: PageView(
           physics: NeverScrollableScrollPhysics(),
           controller: _pageController,
-          children: [OrdersArrived(), ItemModify()],
+          children: [OrdersArrived(), ItemModify(), AddItemsBySeller()],
           onPageChanged: (int index) {
             setState(() {
               _pageController.jumpToPage(index);
@@ -71,14 +79,14 @@ class _SellerHomeState extends State<SellerHome> with TickerProviderStateMixin {
           },
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.black,
-        child: Icon(Icons.add),
-        onPressed: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => AddItemsBySeller()));
-        },
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   backgroundColor: pink,
+      //   child: Icon(Icons.add),
+      //   onPressed: () {
+      //     Navigator.push(context,
+      //         MaterialPageRoute(builder: (context) => AddItemsBySeller()));
+      //   },
+      // ),
     );
   }
 }

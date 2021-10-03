@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:handicraft/Widgets/color.dart';
+import 'package:handicraft/Widgets/fonts.dart';
 import 'package:handicraft/customer_screen/orderpages.dart';
 import 'package:handicraft/customer_screen/customerhome.dart';
 import 'package:handicraft/sidebar/sidebar_layout.dart';
@@ -18,6 +20,8 @@ class ConfirmViaCart extends StatefulWidget {
 }
 
 class _ConfirmViaCartState extends State<ConfirmViaCart> {
+  int selectedRadioTile = 0;
+
   List<CartCards> cartItems = [];
   Future<void> getCartItems() async {
     cartItems.clear();
@@ -29,6 +33,7 @@ class _ConfirmViaCartState extends State<ConfirmViaCart> {
       CartCards cart = CartCards(
           title: data.data()['title'],
           price: data.data()['price'],
+          imageURL: data.data()['imageURL'],
           itemID: data.id,
           available: data.data()['available'],
           seller: data.data()['seller']);
@@ -42,18 +47,42 @@ class _ConfirmViaCartState extends State<ConfirmViaCart> {
   final _formKey = GlobalKey<FormState>();
   final _state = TextEditingController();
   final _city = TextEditingController();
+  final phonenoC = TextEditingController();
   final _locality = TextEditingController();
   final _pinCode = TextEditingController();
   final titleControllerName = TextEditingController();
+
+  // QuerySnapshot data;
+  // bool pageLodaing = true;
+
+  // Future getUpi() async {
+  //   data = await FirebaseFirestore.instance
+  //       .collection("users")
+  //       .where("email", isEqualTo: cartItems)
+  //       .get();
+  //   // print(data);
+  //   print(data.docs[0]["upi"]);
+  // }
+
+  // @override
+  // Future<void> initState() {
+  //   super.initState();
+  //   getUpi().whenComplete(() {
+  //     setState(() {
+  //       pageLodaing = false;
+  //     });
+  //   });
+  //   // getData();
+  // }
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: Color(0xff44a7c4),
+      backgroundColor: bgcolor,
       appBar: AppBar(
-        backgroundColor: Color(0xff44a7c4),
-        // title: Text("Delivery Address"),
+        backgroundColor: bgcolor,
+        title: Text("Shipping Address"),
         elevation: 0,
         leading: CloseButton(),
       ),
@@ -63,29 +92,54 @@ class _ConfirmViaCartState extends State<ConfirmViaCart> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      "Shipping Address",
-                      style: Theme.of(context).textTheme.headline5.copyWith(
-                          color: Colors.white, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  SizedBox(
-                    height: size.height * 0.05,
-                  ),
+                  // Padding(
+                  //   padding: const EdgeInsets.all(8.0),
+                  //   child: Text(
+                  //     "Shipping Address",
+                  //     style: Theme.of(context).textTheme.headline5.copyWith(
+                  //         color: Colors.white, fontWeight: FontWeight.bold),
+                  //   ),
+                  // ),
+                  // SizedBox(
+                  //   height: size.height * 0.05,
+                  // ),
                   Form(
                       key: _formKey,
                       child: Column(
                         children: [
                           Container(
                             child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                TextField1(icon: Icons.person,title: "Name",titleController: titleControllerName),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 20.0),
+                                  child: Text("Payment Type"),
+                                ),
+                                RadioListTile(
+                                    subtitle: Text("Available"),
+                                    activeColor: Colors.black,
+                                    value: 0,
+                                    groupValue: selectedRadioTile,
+                                    onChanged: (val) {
+                                      setState(() {
+                                        selectedRadioTile = 0;
+                                      });
+                                    },
+                                    title: Text("COD", style: b_14pink())),
+                                TextField1(
+                                    icon: Icons.person,
+                                    title: "Name",
+                                    titleController: titleControllerName),
+                                TextField1(
+                                    icon: Icons.phone,
+                                    title: "Phone number",
+                                    titleController: phonenoC),
                                 Container(
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: TextFormField(
+                                      cursorColor: pink,
                                       onChanged: (value) async {
                                         void update(String value) async {
                                           try {
@@ -126,16 +180,20 @@ class _ConfirmViaCartState extends State<ConfirmViaCart> {
                                               const Radius.circular(26.0),
                                             ),
                                           ),
-                                          filled: true,
-                                          prefixIcon: Icon(
-                                            Icons.pin_drop,
-                                            color: Color(0xff44a7c4),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                              const Radius.circular(26.0),
+                                            ),
                                           ),
+                                          filled: true,
+                                          prefixIcon: Icon(Icons.pin_drop,
+                                              color: mehron),
                                           // icon: Icon(icon,color: Colors.white,),
                                           hintStyle: TextStyle(
                                               color: Colors.grey[800]),
                                           hintText: "PinCode",
-                                          fillColor: Colors.white),
+                                          fillColor: cream),
                                       validator: (title) => title.length == 6 &&
                                               title.isNotEmpty &&
                                               isNumeric(title) &&
@@ -179,8 +237,7 @@ class _ConfirmViaCartState extends State<ConfirmViaCart> {
                       child: ElevatedButton(
                         style: ButtonStyle(
                           // padding: MaterialStateProperty.all(EdgeInsets.symmetric(horizontal: size.width * 0.36)),
-                          backgroundColor:
-                              MaterialStateProperty.all(Colors.indigo),
+                          backgroundColor: MaterialStateProperty.all(pink),
                           shape:
                               MaterialStateProperty.all<RoundedRectangleBorder>(
                             RoundedRectangleBorder(
@@ -233,9 +290,12 @@ class _ConfirmViaCartState extends State<ConfirmViaCart> {
       print(flag);
       for (int i = 0; i < cartItems.length; i++) {
         await FirebaseFirestore.instance.collection("Orders").doc().set({
+          "Payment": selectedRadioTile == 0 ? "COD" : "UPI",
           "title": cartItems[i].title,
           "name": titleControllerName.text.trim(),
+          "imageURL": cartItems[i].imageURL,
           "itemId": cartItems[i].itemID,
+          "phone": phonenoC.text.trim(),
           "price": cartItems[i].price,
           "seller": cartItems[i].seller,
           "customer": App.sharedPreferences.getString("email"),
@@ -245,7 +305,7 @@ class _ConfirmViaCartState extends State<ConfirmViaCart> {
               _city.text.trim() +
               ", " +
               _state.text.trim(),
-          "status": "OrderPlaced",
+          "status": "Order Placed",
           "time": DateTime.now(),
         });
       }
@@ -264,6 +324,12 @@ class _ConfirmViaCartState extends State<ConfirmViaCart> {
 }
 
 class CartCards {
-  String title, price, itemID, available, seller;
-  CartCards({this.title, this.price, this.itemID, this.available, this.seller});
+  String title, price, itemID, available, seller, imageURL;
+  CartCards(
+      {this.title,
+      this.price,
+      this.itemID,
+      this.available,
+      this.seller,
+      this.imageURL});
 }
