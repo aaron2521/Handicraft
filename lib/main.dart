@@ -22,6 +22,7 @@ class MyApp extends StatelessWidget {
         primaryColor: pink,
         accentColor: cream,
       ),
+      // here is splash screen
       home: SplashScreen(),
     );
   }
